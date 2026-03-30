@@ -1,0 +1,23 @@
+version: '3.8'
+
+# NGINX PROXY MANAGER (Gateway)
+# Jalankan file ini di dalam LXC 1 (Ubuntu 22.04/24.04)
+# Perintah: docker compose up -d
+
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      # These ports are in format <host-port>:<container-port>
+      - '80:80' # Public HTTP Port
+      - '81:81' # Admin Web Port (Akses di http://IP-LXC:81)
+      - '443:443' # Public HTTPS Port
+    environment:
+      # Optional: Jika ingin mengganti port admin
+      # NPM_PORT: 81
+      # IPv6 disable if not used
+      DISABLE_IPV6: 'true'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt

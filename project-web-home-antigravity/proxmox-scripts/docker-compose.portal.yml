@@ -1,0 +1,20 @@
+version: '3.8'
+
+# ENTERPRISE WEB PORTAL (Node.js Backend & Frontend HTML)
+# Jalankan ini di LXC 5 jika Anda ingin menggunakan Docker alih-alih PM2 langsung.
+# Pastikan folder 'web-portal' (source code yang kita buat) berada di direktori yang sama.
+
+services:
+  portal-app:
+    build: 
+      context: ../web-portal
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Akses web di http://IP-LXC:3000
+    volumes:
+      # Mapping database SQLite ke luar container agar data tidak hilang (persistent)
+      - ../web-portal/data:/usr/src/app/data
+    environment:
+      - NODE_ENV=production
+      - SECRET_KEY=enterprise_super_secret_sso_key

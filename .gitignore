@@ -1,0 +1,12 @@
+# Node modules
+node_modules/
+project-web-home-antigravity/web-portal/node_modules/
+
+# OS files
+.DS_Store
+
+# Deployment artifacts
+project-web-home-antigravity.zip
+
+# VSCode
+.vscode/

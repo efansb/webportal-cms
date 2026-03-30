@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Portal - Admin</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex items-center justify-center relative selection:bg-white/30 p-4">
+    
+    <!-- Dynamic Mesh Background -->
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950"></div>
+
+    <!-- Login Container (Hidden when logged in) -->
+    <div id="login-container" class="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold flex flex-col items-center gap-2">
+                <i data-lucide="lock" class="w-8 h-8 text-blue-400"></i>
+                Admin Area
+            </h1>
+            <p class="text-white/60 text-sm mt-2">Login dengan Master Account (IdP)</p>
+        </div>
+        
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-white/80 mb-1">Username</label>
+                <input type="text" id="username" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="admin" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-white/80 mb-1">Password</label>
+                <input type="password" id="password" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required>
+            </div>
+            <div id="login-error" class="text-red-400 text-sm hidden">Invalid username or password</div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/30">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Admin Dashboard (Hidden when logged out) -->
+    <div id="dashboard-container" class="w-full max-w-6xl max-h-[90vh] bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden hidden flex flex-col">
+        
+        <!-- Header -->
+        <header class="border-b border-white/10 px-6 py-4 flex justify-between items-center bg-black/20">
+            <h2 class="text-xl font-bold flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                Enterprise Control Panel
+            </h2>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-white/60">SSO Master Node</span>
+                <button id="logout-btn" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors border border-red-500/30">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Tambah Aplikasi App -->
+            <div class="bg-black/20 border border-white/10 rounded-2xl p-5">
+                <h3 class="font-semibold mb-4 border-b border-white/10 pb-2 flex items-center gap-2 text-blue-300">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i> Tambah Aplikasi Menu
+                </h3>
+                <form id="app-form" class="space-y-3">
+                    <input type="text" id="app_name" placeholder="Nama App (e.g., HRIS Baru)" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                    <input type="url" id="app_url" placeholder="URL (https://hris.domain.com)" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                    <input type="text" id="app_icon" placeholder="Lucide Icon (e.g., users, database)" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                    <div class="flex gap-2">
+                        <input type="text" id="grad_from" placeholder="from-blue-500" class="w-1/2 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500" value="from-blue-500">
+                        <input type="text" id="grad_to" placeholder="to-indigo-600" class="w-1/2 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500" value="to-indigo-600">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600/50 hover:bg-blue-600 border border-blue-500/50 py-2 text-sm rounded-lg transition-colors">Simpan Aplikasi</button>
+                </form>
+            </div>
+
+            <!-- Tambah Informasi -->
+            <div class="bg-black/20 border border-white/10 rounded-2xl p-5">
+                <h3 class="font-semibold mb-4 border-b border-white/10 pb-2 flex items-center gap-2 text-orange-300">
+                    <i data-lucide="megaphone" class="w-4 h-4"></i> Tambah Pengumuman
+                </h3>
+                <form id="info-form" class="space-y-3">
+                    <input type="text" id="info_title" placeholder="Judul Pengumuman" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500" required>
+                    <textarea id="info_content" rows="3" placeholder="Isi detail pengumuman..." class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500" required></textarea>
+                    <select id="info_type" class="w-full bg-[#1e293b] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500">
+                        <option value="info">Info Biasa (Biru)</option>
+                        <option value="warning">Penting (Kuning)</option>
+                        <option value="urgent">Urgent / Maintenance (Merah)</option>
+                    </select>
+                    <button type="submit" class="w-full bg-orange-600/50 hover:bg-orange-600 border border-orange-500/50 py-2 text-sm rounded-lg transition-colors">Publish Pengumuman</button>
+                </form>
+            </div>
+
+            <!-- Tambah Agenda -->
+            <div class="bg-black/20 border border-white/10 rounded-2xl p-5">
+                <h3 class="font-semibold mb-4 border-b border-white/10 pb-2 flex items-center gap-2 text-emerald-300">
+                    <i data-lucide="calendar" class="w-4 h-4"></i> Agenda / Kalender
+                </h3>
+                <form id="agenda-form" class="space-y-3">
+                    <input type="text" id="agenda_title" placeholder="Nama Acara/Meeting" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" required>
+                    <div class="flex gap-2">
+                        <div class="w-1/2">
+                            <label class="text-[10px] text-white/50 mb-0.5 block">Start Time</label>
+                            <input type="datetime-local" id="agenda_start" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500" required>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-[10px] text-white/50 mb-0.5 block">Location</label>
+                            <input type="text" id="agenda_loc" placeholder="Ruang Meeting A" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600/50 hover:bg-emerald-600 border border-emerald-500/50 py-2 text-sm rounded-lg transition-colors mt-2">Simpan Agenda</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Admin Frontend Logic
+        const API_URL = '/api';
+        
+        // Auth check
+        const token = localStorage.getItem('token');
+        if (token) {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+        }
+
+        // Login Logic
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.token);
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    document.getElementById('login-error').classList.add('hidden');
+                    alert('Login Berhasil sebagai: ' + data.role);
+                } else {
+                    document.getElementById('login-error').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Gagal koneksi ke API Backend. Pastikan 'node server.js' berjalan.");
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            document.getElementById('dashboard-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+        });
+
+        // Submit Announcement
+        document.getElementById('info-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitData('/admin/announcements', {
+                title: document.getElementById('info_title').value,
+                content: document.getElementById('info_content').value,
+                type: document.getElementById('info_type').value
+            });
+            e.target.reset();
+        });
+
+        // Submit App
+        document.getElementById('app-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitData('/admin/apps', {
+                name: document.getElementById('app_name').value,
+                url: document.getElementById('app_url').value,
+                icon_name: document.getElementById('app_icon').value,
+                gradient_from: document.getElementById('grad_from').value,
+                gradient_to: document.getElementById('grad_to').value,
+                shadow_color: "shadow-blue-500/50" // generic shadow
+            });
+            e.target.reset();
+        });
+
+        // Submit Agenda
+        document.getElementById('agenda-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitData('/admin/agenda', {
+                title: document.getElementById('agenda_title').value,
+                start_time: document.getElementById('agenda_start').value,
+                location: document.getElementById('agenda_loc').value,
+                description: 'Agenda Perusahaan'
+            });
+            e.target.reset();
+        });
+
+        // Helper to send data
+        async function submitData(endpoint, bodyData) {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bodyData)
+                });
+                
+                if (res.ok) {
+                    alert('Data berhasil disimpan!');
+                } else {
+                    alert('Gagal menyimpan. Session expired atau unauthorized.');
+                }
+            } catch (err) {
+                alert('Gagal koneksi server!');
+            }
+        }
+    </script>
+</body>
+</html>

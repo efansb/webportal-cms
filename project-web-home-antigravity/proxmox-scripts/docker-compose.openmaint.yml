@@ -1,0 +1,42 @@
+version: '3.8'
+
+# openMAINT (Asset Management)
+# Jalankan file ini di dalam LXC/VM 3
+# Perintah: docker compose up -d
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    restart: always
+    environment:
+      - POSTGRES_USER=openmaint
+      - POSTGRES_PASSWORD=openmaint_secure_password
+      - POSTGRES_DB=openmaint
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - openmaint_network
+
+  openmaint:
+    image: tecnoteca/openmaint:2.4-3.5  # Sesuaikan dengan versi terbaru openMAINT (cmdbuild-based)
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080" # Akses Tomcat via http://IP-LXC:8080
+    environment:
+      - CMDBUILD_DB_URL=jdbc:postgresql://postgres:5432/openmaint
+      - CMDBUILD_DB_USER=openmaint
+      - CMDBUILD_DB_PASS=openmaint_secure_password
+    volumes:
+      - openmaint_attachments:/var/lib/tomcat9/webapps/openmaint/attachments
+    networks:
+      - openmaint_network
+
+volumes:
+  postgres_data:
+  openmaint_attachments:
+
+networks:
+  openmaint_network:
+    driver: bridge
